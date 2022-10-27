@@ -11,6 +11,10 @@
  import React, { useCallback, useState, useMemo } from 'react';
  import { StyleSheet, View, Text, TextInput, Switch, TouchableOpacity, ActivityIndicator, Alert, StatusBar, SafeAreaView } from 'react-native';
  import { Blurhash } from 'react-native-blurhash';
+ import Upload from 'react-native-background-upload'
+ import { Platform } from 'react-native'
+ import * as ImagePicker from 'expo-image-picker';
+ import Constants from 'expo-constants';
  
  const COLORS = {
    background: '#F5FCFF',
@@ -62,6 +66,59 @@
      }
    }, [encodingImageUri]);
    //#endregion
+
+   const pickAndUpload = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      const bearer = Constants.expoConfig?.extra?.bearer ?? null;
+
+      if (bearer === null) {
+        throw new Error('bearer not set')
+      }
+
+      Upload.startUpload({
+        url: 'https://maxime.stg.hw-platform.com/api/v2/projects/add_picture/1870',
+        method: 'POST',
+        type: 'multipart',
+        headers: {
+          'content-type': 'application/json', // Customize content-type
+          Authorization: `Bearer ${bearer}`,
+        },
+        path: Platform.OS === 'android' ? result.uri.replace('file://', '') : result.uri,
+        field: 'picture',
+        // Below are options only supported on Android
+        notification: { enabled: false },
+      })
+        .then((uploadId) => {
+          console.log('Upload started')
+          Upload.addListener('progress', uploadId, (data) => {
+            console.log(`Progress: ${data.progress}%`)
+          })
+          Upload.addListener('error', uploadId, (data) => {
+            console.log(`Error: ${data.error}%`)
+          })
+          Upload.addListener('cancelled', uploadId, (data) => {
+            console.log(`Cancelled!`)
+          })
+          Upload.addListener('completed', uploadId, (data) => {
+            // data includes responseCode: number and responseBody: Object
+            console.log('Completed!')
+          })
+        })
+        .catch((err) => {
+          console.log('Upload error!', err)
+        })
+    }
+   }
  
    return (
      <>
@@ -98,6 +155,10 @@
          <TextInput value={encodingImageUri} placeholder="Image URL to encode" onChangeText={setEncodingImageUri} style={styles.textInput} />
          <TouchableOpacity style={encodeButtonStyle} disabled={encodingImageUri.length < 5} onPress={startEncoding}>
            {isEncoding ? <ActivityIndicator color="black" /> : <Text>Encode</Text>}
+         </TouchableOpacity>
+
+         <TouchableOpacity style={styles.pickButton} onPress={pickAndUpload}>
+           <Text>Pick image and upload</Text>
          </TouchableOpacity>
        </SafeAreaView>
      </>
@@ -154,6 +215,14 @@
    encodeButton: {
      height: 37,
      width: 120,
+     marginTop: 30,
+     backgroundColor: COLORS.button,
+     borderRadius: 10,
+     paddingVertical: 10,
+     paddingHorizontal: 35,
+     justifyContent: 'center',
+   },
+   pickButton: {
      marginTop: 30,
      backgroundColor: COLORS.button,
      borderRadius: 10,

@@ -1,2 +1,2 @@
 require('ts-node/register');
-module.exports = require('./csutomConfig.ts');
+module.exports = require('./configClient.ts');

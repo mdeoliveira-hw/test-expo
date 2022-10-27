@@ -33,6 +33,10 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
         },
         android: {
             package: configClient.packageId
+        },
+        extra: {
+            ...config.extra,
+            bearer: process.env.BEARER
         }
     }
 }
