@@ -12,8 +12,22 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     return {
         ...config,
         name: configClient.name,
-        slug: 'my-app',
+        slug: 'test-expo',
+        version: "1.0.0",
+        orientation: 'portrait',
         icon: configClient.icon,
+        userInterfaceStyle: 'automatic',
+        splash: {
+            image: './assets/splash.png',
+            resizeMode: "contain",
+            backgroundColor: "#ffffff"
+        },
+        updates: {
+            fallbackToCacheTimeout: 0
+        },
+        assetBundlePatterns: [
+            "**/*"
+        ],
         ios: {
             bundleIdentifier: configClient.bundleId
         },
