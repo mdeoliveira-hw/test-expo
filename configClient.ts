@@ -9,8 +9,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     })
     const configClient = Object.entries(whiteLabel)[configClientIndex][1]    
 
-    return {
+    const test: ExpoConfig = {
         ...config,
+        updates: configClient.updates,
         name: configClient.name,
         slug: 'test-expo',
         version: "1.0.0",
@@ -21,9 +22,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
             image: './assets/splash.png',
             resizeMode: "contain",
             backgroundColor: "#ffffff"
-        },
-        updates: {
-            fallbackToCacheTimeout: 0
         },
         assetBundlePatterns: [
             "**/*"
@@ -37,8 +35,13 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
         extra: {
             ...config.extra,
             bearer: process.env.BEARER
-        }
+        },
     }
+
+    console.log(test);
+    
+
+    return test
 }
 
 export default config

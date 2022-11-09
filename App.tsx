@@ -154,7 +154,7 @@
          </View>
          <TextInput value={encodingImageUri} placeholder="Image URL to encode" onChangeText={setEncodingImageUri} style={styles.textInput} />
          <TouchableOpacity style={encodeButtonStyle} disabled={encodingImageUri.length < 5} onPress={startEncoding}>
-           {isEncoding ? <ActivityIndicator color="black" /> : <Text>Encode</Text>}
+           {isEncoding ? <ActivityIndicator color="black" /> : <Text>Encode picture</Text>}
          </TouchableOpacity>
 
          <TouchableOpacity style={styles.pickButton} onPress={pickAndUpload}>
@@ -214,7 +214,6 @@
    },
    encodeButton: {
      height: 37,
-     width: 120,
      marginTop: 30,
      backgroundColor: COLORS.button,
      borderRadius: 10,

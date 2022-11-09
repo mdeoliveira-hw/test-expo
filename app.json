@@ -1,5 +1,8 @@
 {
-  "expo": {    
+  "expo": {  
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
     "extra": {
       "eas": {
         "projectId": "30999b90-c861-4c6b-b72c-3bffdcd98eea"
